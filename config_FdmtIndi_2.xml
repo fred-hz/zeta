@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<zalpha>
+    
+	<Paths DATAROOT="/Users/zhaozibo/Zalpha/zalpha/data" RAWDATA="" CACHE="{DATAROOT}/cache"
+		   LOCAL=""/>
+
+	<Constants backdays="256" checkPointDays="5"  startDate="20090105" endDate="0"/>
+
+	<!-- All the modules to be combined together -->
+	<Modules>
+        <Module id="envStandard" class="environment.env_standard.EnvStandard" dataPath="{DATAROOT}" cachePath="{CACHE}" startDate="20100104" endDate="20161231"/>
+
+        <!-- Universe -->
+        <Module id="TOP2000" class="data_manager.dm_universe.DataManagerUniverse" cachePath= "{CACHE}/universe/TOP2000" dataPath="" universe="2000" windowDays="63" minPrice="1." maxPrice="1000." minAmount="0." minCap="0." minLive="40" startDate="20070104" endDate="20161230"/>
+        <Module id="TOP1000" class="data_manager.dm_universe.DataManagerUniverse" cachePath= "{CACHE}/universe/TOP1000" dataPath="" universe="1000" windowDays="63" minPrice="1." maxPrice="1000." minAmount="0." minCap="0." minLive="40" startDate="20070104" endDate="20161230"/>
+        <Module id="TOP500" class="data_manager.dm_universe.DataManagerUniverse" cachePath= "{CACHE}/universe/TOP500" dataPath="" universe="500" windowDays="63" minPrice="1." maxPrice="1000." minAmount="0." minCap="0." minLive="40" startDate="20070104" endDate="20161230"/>
+
+		<!-- Data Managers -->
+        <Module id="basedata" class="data_manager.dm_basedata.DataManagerBaseData" cachePath="{CACHE}/basedata" dataPath="{DATAROOT}/raw_stock_daily_data" sectorPath="{DATAROOT}/raw_sector_daily_data" startDate="20060104" endDate="20141231"/>
+        <!--<Module id="factors" class="data_manager.dm_factors.DataManagerFactors" cachePath="{CACHE}/factors" dataPath="{DATAROOT}/raw_factors_daily_data"/>-->
+        <Module id="FdmtIndi" class="data_manager.dm_FdmtIndi.DataManagerFdmtIndi" cachePath="{CACHE}/FdmtIndi" dataPath="{DATAROOT}/raw_FdmtIndi_PS_data"/>
+        <Module id="adjPrice" class="data_manager.dm_adjprice.DataManagerAdjPrice" startDate="20100104" endDate="20170216"/>
+
+		<!-- Alpha Modules -->
+		<Module id="AlphaFdmtIndi_tRePS" class="alpha.alpha_FdmtIndi_tRePS.AlphaFdmtIndi_tRePS"/>
+		<Module id="AlphaFdmtIndi_tProfitYOY" class="alpha.alpha_FdmtIndi_tProfitYOY.AlphaFdmtIndi_tProfitYOY"/>
+		<Module id="AlphaFdmtIndi_ROIC" class="alpha.alpha_FdmtIndi_ROIC.AlphaFdmtIndi_ROIC"/>
+		<Module id="AlphaFdmtIndi_ROEYOY" class="alpha.alpha_FdmtIndi_ROEYOY.AlphaFdmtIndi_ROEYOY"/>
+		<Module id="AlphaFdmtIndi_ROEA" class="alpha.alpha_FdmtIndi_ROEA.AlphaFdmtIndi_ROEA"/>
+		<Module id="AlphaFdmtIndi_ROA" class="alpha.alpha_FdmtIndi_ROA.AlphaFdmtIndi_ROA"/>
+		<Module id="AlphaFdmtIndi_rePS" class="alpha.alpha_FdmtIndi_rePS.AlphaFdmtIndi_rePS"/>
+		<Module id="AlphaFdmtIndi_opPS" class="alpha.alpha_FdmtIndi_opPS.AlphaFdmtIndi_opPS"/>
+
+		<!-- Operation Modules -->
+        <Module id="AlphaOpTruncate" class="operation.op_truncate.OperationTruncate"/>
+        <Module id="AlphaOpDecay" class="operation.op_decay.OperationDecay"/>
+        <Module id="AlphaOpNeutral" class="operation.op_neutral.OperationNeutral"/>
+        <Module id="AlphaOpPower" class="operation.op_power.OperationPower"/>
+
+		<!-- Performance Modules -->
+        <Module id="Performance" class="performance.performance.Performance" longcapital="1e+7" shortcapital="1e+7" tax="0." fee="0."/>
+    </Modules>
+
+    <Environment moduleId="envStandard"/>
+    <Sim>
+
+		<Case id="alpha_FdmtIndi_opPS_TOP2000" delay="1" method="1" ndays="5">
+			<Universe moduleId="TOP2000"/>
+			<Alpha moduleId="AlphaFdmtIndi_opPS"/>
+			<Operations>
+				<Operation moduleId="AlphaOpPower" exp="1"/>
+				<Operation moduleId="AlphaOpDecay" days="1"/>
+				<Operation moduleId="AlphaOpNeutral" group="sector"/>
+				<Operation moduleId="AlphaOpTruncate" maxPercent="0.1"/>
+			</Operations>
+			<Performance moduleId="Performance"/>
+		</Case>
+
+		<Case id="alpha_FdmtIndi_rePS_TOP2000" delay="1" method="1" ndays="5">
+			<Universe moduleId="TOP2000"/>
+			<Alpha moduleId="AlphaFdmtIndi_rePS"/>
+			<Operations>
+				<Operation moduleId="AlphaOpPower" exp="1"/>
+				<Operation moduleId="AlphaOpDecay" days="1"/>
+				<Operation moduleId="AlphaOpNeutral" group="sector"/>
+				<Operation moduleId="AlphaOpTruncate" maxPercent="0.1"/>
+			</Operations>
+			<Performance moduleId="Performance"/>
+		</Case>
+
+		<Case id="alpha_FdmtIndi_ROA_TOP2000" delay="1" method="1" ndays="5">
+			<Universe moduleId="TOP2000"/>
+			<Alpha moduleId="AlphaFdmtIndi_ROA"/>
+			<Operations>
+				<Operation moduleId="AlphaOpPower" exp="1"/>
+				<Operation moduleId="AlphaOpDecay" days="1"/>
+				<Operation moduleId="AlphaOpNeutral" group="sector"/>
+				<Operation moduleId="AlphaOpTruncate" maxPercent="0.1"/>
+			</Operations>
+			<Performance moduleId="Performance"/>
+		</Case>
+
+		<Case id="alpha_FdmtIndi_ROEA_TOP2000" delay="1" method="1" ndays="5">
+			<Universe moduleId="TOP2000"/>
+			<Alpha moduleId="AlphaFdmtIndi_ROEA"/>
+			<Operations>
+				<Operation moduleId="AlphaOpPower" exp="1"/>
+				<Operation moduleId="AlphaOpDecay" days="1"/>
+				<Operation moduleId="AlphaOpNeutral" group="sector"/>
+				<Operation moduleId="AlphaOpTruncate" maxPercent="0.1"/>
+			</Operations>
+			<Performance moduleId="Performance"/>
+		</Case>
+
+		<Case id="alpha_FdmtIndi_ROEYOY_TOP2000" delay="1" method="1" ndays="5">
+			<Universe moduleId="TOP2000"/>
+			<Alpha moduleId="AlphaFdmtIndi_ROEYOY"/>
+			<Operations>
+				<Operation moduleId="AlphaOpPower" exp="1"/>
+				<Operation moduleId="AlphaOpDecay" days="1"/>
+				<Operation moduleId="AlphaOpNeutral" group="sector"/>
+				<Operation moduleId="AlphaOpTruncate" maxPercent="0.1"/>
+			</Operations>
+			<Performance moduleId="Performance"/>
+		</Case>
+
+		<Case id="alpha_FdmtIndi_ROIC_TOP2000" delay="1" method="1" ndays="5">
+			<Universe moduleId="TOP2000"/>
+			<Alpha moduleId="AlphaFdmtIndi_ROIC"/>
+			<Operations>
+				<Operation moduleId="AlphaOpPower" exp="1"/>
+				<Operation moduleId="AlphaOpDecay" days="1"/>
+				<Operation moduleId="AlphaOpNeutral" group="sector"/>
+				<Operation moduleId="AlphaOpTruncate" maxPercent="0.1"/>
+			</Operations>
+			<Performance moduleId="Performance"/>
+		</Case>
+
+		<Case id="alpha_FdmtIndi_tProfitYOY_TOP2000" delay="1" method="1" ndays="5">
+			<Universe moduleId="TOP2000"/>
+			<Alpha moduleId="AlphaFdmtIndi_tProfitYOY"/>
+			<Operations>
+				<Operation moduleId="AlphaOpPower" exp="1"/>
+				<Operation moduleId="AlphaOpDecay" days="1"/>
+				<Operation moduleId="AlphaOpNeutral" group="sector"/>
+				<Operation moduleId="AlphaOpTruncate" maxPercent="0.1"/>
+			</Operations>
+			<Performance moduleId="Performance"/>
+		</Case>
+
+		<Case id="alpha_FdmtIndi_tRePS_TOP2000" delay="1" method="1" ndays="5">
+			<Universe moduleId="TOP2000"/>
+			<Alpha moduleId="AlphaFdmtIndi_tRePS"/>
+			<Operations>
+				<Operation moduleId="AlphaOpPower" exp="1"/>
+				<Operation moduleId="AlphaOpDecay" days="1"/>
+				<Operation moduleId="AlphaOpNeutral" group="sector"/>
+				<Operation moduleId="AlphaOpTruncate" maxPercent="0.1"/>
+			</Operations>
+			<Performance moduleId="Performance"/>
+		</Case>
+
+	</Sim>
+</zalpha>

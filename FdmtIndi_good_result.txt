@@ -1,0 +1,16 @@
+basicEPS
+daysAR
+EBITPS
+grossMARgin
+niAttrPYOY
+niYOY
+npMARgin
+operProfitYOY
+opPS
+rePS
+ROA
+ROEA
+ROEYOY
+ROIC
+tProfitYOY
+tRePS

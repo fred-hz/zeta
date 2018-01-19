@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<zalpha>
+
+	<Paths DATAROOT="/Users/zhaozibo/Zalpha/zalpha/data" RAWDATA="" CACHE="{DATAROOT}/cache"
+		   LOCAL=""/>
+
+	<Constants backdays="256" checkPointDays="5"  startDate="20100104" endDate="20150129"/>
+
+	<!-- All the modules to be combined together -->
+	<Modules>
+        <Module id="envStandard" class="environment.env_standard.EnvStandard" dataPath="{DATAROOT}" cachePath="{CACHE}" startDate="20100104" endDate="20161231"/>
+
+        <!-- Universe -->
+        <Module id="TOP500" class="data_manager.dm_universe.DataManagerUniverse" cachePath= "{CACHE}/universe/TOP500" dataPath=""
+                universe="500" windowDays="63" minPrice="1." maxPrice="1000." minAmount="0." minCap="0." minLive="40" startDate="20070104" endDate="20161230"/>
+        <Module id="TOP2000" class="data_manager.dm_universe.DataManagerUniverse" cachePath= "{CACHE}/universe/TOP2000" dataPath=""
+                universe="2000" windowDays="63" minPrice="1." maxPrice="1000." minAmount="0." minCap="0." minLive="40" startDate="20070104" endDate="20161230"/>
+
+		<!-- Data Managers -->
+        <Module id="basedata" class="data_manager.dm_basedata.DataManagerBaseData" cachePath="{CACHE}/basedata" dataPath="{DATAROOT}/raw_stock_daily_data" sectorPath="{DATAROOT}/raw_sector_daily_data" startDate="20060104" endDate="20141231"/>
+        <!-- <Module id="wind.financeindex" class="data_manager.dm_windfinance.DataManagerWindFinance" cachePath="{CACHE}/wind/bin" dataPath="" startDate="" endDate=""/> -->
+        <Module id="adjPrice" class="data_manager.dm_adjprice.DataManagerAdjPrice" startDate="20100104" endDate="20161230"/>
+
+		<!-- Alpha Modules -->
+        <Module id="AlphaLuckydog_4" class="alpha.alpha_luckydog_4.AlphaLuckydog_4"/>
+
+		<!-- Operation Modules -->
+        <Module id="AlphaOpTruncate" class="operation.op_truncate.OperationTruncate"/>
+        <Module id="AlphaOpDecay" class="operation.op_decay.OperationDecay"/>
+        <Module id="AlphaOpNeutral" class="operation.op_neutral.OperationNeutral"/>
+        <Module id="AlphaOpPower" class="operation.op_power.OperationPower"/>
+
+		<!-- Performance Modules -->
+        <Module id="Performance" class="performance.performance.Performance" longcapital="1e+7" shortcapital="1e+7" tax="0." fee="0."/>
+    </Modules>
+
+    <Environment moduleId="envStandard"/>
+    <Sim>
+        <Case id="alpha_luckydog_4" delay="1" method="1" ndays="5">
+            <Universe moduleId="TOP2000"/>
+            <Alpha moduleId="AlphaLuckydog_4"/>
+            <Operations>
+                <Operation moduleId="AlphaOpPower" exp="3"/>
+			    <Operation moduleId="AlphaOpDecay" days="5"/>
+                <Operation moduleId="AlphaOpNeutral" group="industry"/>
+			    <Operation moduleId="AlphaOpTruncate" maxPercent="0.1"/>
+            </Operations>
+            <Performance moduleId="Performance"/>
+        </Case>
+    </Sim>
+
+</zalpha>
